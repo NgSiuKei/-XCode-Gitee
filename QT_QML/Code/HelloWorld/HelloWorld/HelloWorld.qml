@@ -8,8 +8,39 @@ Window {
     height: 600
     title: qsTr("Hello World")
 
-    RedGreenLight {
-        x: 300
-        y: 100
+    Rectangle {
+        width: 240
+        height: 300
+        color: "white"
+        GridView {
+            anchors.fill: parent
+            anchors.margins: 20
+            clip: true
+            model: 100
+            cellWidth: 45
+            cellHeight: 45
+            delegate: numberDelegate
+            highlight: highlightComponent
+            focus: true
+        }
+        Component {
+                id: highlightComponent
+                Rectangle {
+                    width: ListView.view.width
+                    color: "lightGreen"
+                }
+            }
+        Component {
+                id: numberDelegate
+                Item {
+                    width: 40
+                    height: 40
+                    Text {
+                        anchors.centerIn: parent
+                        font.pixelSize: 10
+                        text: index
+                    }
+                }
+            }
     }
 }

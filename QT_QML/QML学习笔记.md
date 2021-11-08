@@ -44,6 +44,9 @@ ___
       - [嵌套动画分组](#嵌套动画分组)
     - [状态与过渡](#状态与过渡)
       - [**状态（States）**](#状态states)
+      - [过渡（Transitions）](#过渡transitions)
+  - [模型-视图-代理](#模型-视图-代理)
+- [因不需要研究这么细致，所以从《模型-视图-代理》这章开始不再记录每章每节内容知识点和demo，而是采取一章一demo做总结](#因不需要研究这么细致所以从模型-视图-代理这章开始不再记录每章每节内容知识点和demo而是采取一章一demo做总结)
 
 ___
 ## 入门
@@ -1135,3 +1138,33 @@ Rectangle {
     }
 }
 ```
+
+#### 过渡（Transitions）
+
+和状态`States`的使用方法类似。
+```QML
+    transitions: [
+        Transition {
+            from: "stop"; to: "go"
+            ColorAnimation { target: light1; properties: "color"; duration: 2000 }
+            ColorAnimation { target: light2; properties: "color"; duration: 2000 }
+        },
+        Transition {
+            from: "go"; to: "stop"
+            ColorAnimation { target: light1; properties: "color"; duration: 2000 }
+            ColorAnimation { target: light2; properties: "color"; duration: 2000 }
+        }
+    ]
+
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: parent.state = (parent.state == "stop"?"go":"stop")
+    }
+```
+
+___
+## 模型-视图-代理
+
+___
+# 因不需要研究这么细致，所以从《模型-视图-代理》这章开始不再记录每章每节内容知识点和demo，而是采取一章一demo做总结
