@@ -56,6 +56,20 @@ Rectangle {
         }
     ]
 
+    transitions: [
+        Transition {
+            from: "stop"; to: "go"
+            ColorAnimation { target: light1; properties: "color"; duration: 2000 }
+            ColorAnimation { target: light2; properties: "color"; duration: 2000 }
+        },
+        Transition {
+            from: "go"; to: "stop"
+            ColorAnimation { target: light1; properties: "color"; duration: 2000 }
+            ColorAnimation { target: light2; properties: "color"; duration: 2000 }
+        }
+    ]
+
+
     MouseArea {
         anchors.fill: parent
         onClicked: parent.state = (parent.state == "stop"?"go":"stop")
