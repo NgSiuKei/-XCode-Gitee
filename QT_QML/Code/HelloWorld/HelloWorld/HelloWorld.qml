@@ -4,18 +4,12 @@ import QtQuick.Window 2.3
 Window {
     id: root
     visible: true
-    width: 800
-    height: 800
+    width: 600
+    height: 600
     title: qsTr("Hello World")
 
-    Column {
-        id: row
-        anchors.centerIn: parent
-        spacing: 5 //元素间隔
-
-        RectangleBlue { }
-        RectangleGreen { }
-        RectangleRed { }
+    RedGreenLight {
+        x: 300
+        y: 100
     }
-
 }

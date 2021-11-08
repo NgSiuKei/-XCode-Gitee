@@ -2,7 +2,48 @@
 
 ## 前言
 
-主要学习思路参考网站[qmlbook](https://qmldoc.cn/print.html)，以QT5官方文档**Assistant**为辅。
+主要学习思路参考网站[qmlbook](https://qmldoc.cn/print.html)，以QT5官方文档为辅，查颜色看[这个](https://www.w3.org/TR/css-color-3/#svg-color)。
+
+___
+## 目录
+- [QML](#qml)
+  - [前言](#前言)
+  - [目录](#目录)
+  - [入门](#入门)
+    - [基本元素](#基本元素)
+      - [**基础元素对象（Item Element）**](#基础元素对象item-element)
+      - [**矩形框元素（Rectangle Element）**](#矩形框元素rectangle-element)
+      - [**文本元素（Text Element）**](#文本元素text-element)
+      - [**图像元素（Image Element）**](#图像元素image-element)
+      - [**鼠标区域元素（MouseArea Element）**](#鼠标区域元素mousearea-element)
+    - [组件](#组件)
+    - [简单转换](#简单转换)
+    - [定位元素](#定位元素)
+      - [**Row（行）**](#row行)
+      - [**Column（列）**](#column列)
+      - [**Grid（组、格栅）**](#grid组格栅)
+      - [**Flow（流）**](#flow流)
+      - [**Repeater（重复元素）**](#repeater重复元素)
+    - [布局元素](#布局元素)
+    - [输入元素](#输入元素)
+      - [**文本输入（TextInput）**](#文本输入textinput)
+      - [**焦点区域（FocusScope）**](#焦点区域focusscope)
+      - [**文本编辑（TextEdit）**](#文本编辑textedit)
+      - [**按键元素（Key Element）**](#按键元素key-element)
+  - [动态元素](#动态元素)
+    - [动画](#动画)
+      - [**动画元素（Animation Elements）**](#动画元素animation-elements)
+      - [**应用动画（Applying Animations）**](#应用动画applying-animations)
+        - [`Animation on`属性动画](#animation-on属性动画)
+        - [`behavior on`属性动作](#behavior-on属性动作)
+        - [`standalone animation`独立运行动画](#standalone-animation独立运行动画)
+      - [**缓冲曲线（Easing Curves）**](#缓冲曲线easing-curves)
+      - [**动画分组（Grouped Animations）**](#动画分组grouped-animations)
+        - [`ParallelAnimation`（平行动画）](#parallelanimation平行动画)
+        - [`SequentialAnimation`（连续动画）](#sequentialanimation连续动画)
+      - [嵌套动画分组](#嵌套动画分组)
+    - [状态与过渡](#状态与过渡)
+      - [**状态（States）**](#状态states)
 
 ___
 ## 入门
@@ -254,7 +295,7 @@ Item {
 
 ### 定位元素
 
-有一些QML元素被用于放置元素对象，它们被称作定位器，QtQuick模块提供了Row（行），Column（列），Grid（组），Flow（流）用来作为定位器。
+有一些QML元素被用于放置元素对象，它们被称作定位器，QtQuick模块提供了`Row`（行），`Column`（列），`Grid`（组、格栅），`Flow`（流）用来作为定位器。
 
 在展示例子前需要定义一些方块（这里只取其中一种，所有方块只有颜色是不同的）用于之后的展示：
 ```QML
@@ -270,7 +311,7 @@ Rectangle {
 
 #### **Row（行）**
 
-Row（行）元素将它的子对象通过顶部对齐的方式从左到右，或者从右到左依次排列。
+`Row`（行）元素将它的子对象通过顶部对齐的方式从左到右，或者从右到左依次排列。
 ```QML
     Row {
         id: row
@@ -287,10 +328,10 @@ Row（行）元素将它的子对象通过顶部对齐的方式从左到右，�
 
 #### **Column（列）**
 
-Column（列）元素将它的子对象通过顶部对齐的列方式进行排列。
+`Column`（列）元素将它的子对象通过顶部对齐的列方式进行排列。
 ```QML
     Column {
-        id: row
+        id: column
         anchors.centerIn: parent
         spacing: 5 //元素间隔
 
@@ -300,3 +341,797 @@ Column（列）元素将它的子对象通过顶部对齐的列方式进行排�
     }
 ```
 ![图片示例](Photo/入门_定位元素_Column.png)
+
+#### **Grid（组、格栅）**
+
+通过设置`rows`（行数）和`columns`（列数）将子对象排列在一个栅格中。属性`flow`（流）与`layoutDirection`（布局方向）用来控制子元素的加入顺序。
+```QML
+    Grid {
+        id: grid
+        anchors.centerIn: parent
+        spacing: 5 //元素间隔
+        columns: 2
+        //rows: 3 //行与列只设置一个，格栅会自动计算另一个
+
+        RectangleBlue { }
+        RectangleGreen { }
+        RectangleRed { }
+        RectangleBlue { }
+        RectangleGreen { }
+        RectangleRed { }
+    }
+```
+![图片示例](Photo/入门_定位元素_Grid.png)
+
+#### **Flow（流）**
+
+通过`flow`（流）属性和`layoutDirection`（布局方向）属性来控制流的方向。它能够从头到底的横向布局，也可以从左到右或者从右到左进行布局。作为加入流中的子对象，它们在需要时可以被包装成新的行或者列。为了让一个流可以工作，必须指定一个宽度或者高度，可以通过属性直接设定，或者通过`anchor`（锚定）布局设置。
+
+```QML
+Window {
+    id: root
+    visible: true
+    width: 300
+    height: 300
+    title: qsTr("Hello World")
+
+    Flow {
+        id: flow
+        anchors.centerIn: parent
+        spacing: 5 //元素间隔
+        anchors.fill: parent
+        anchors.margins: 20 //元素与边框间隔
+        flow: Flow.TopToBottom //从上到下排列
+
+        RectangleBlue { }
+        RectangleGreen { }
+        RectangleRed { }
+        RectangleBlue { }
+        RectangleGreen { }
+        RectangleRed { }
+    }
+}
+```
+![图片示例](Photo/入门_定位元素_Flow.png)
+
+#### **Repeater（重复元素）**
+
+通常Repeater（重复元素）与定位器一起使用。它的工作方式就像for循环与迭代器的模式一样。
+```QML
+    Grid {
+        id: grid
+        anchors.centerIn: parent
+        spacing: 5 //元素间隔
+        anchors.fill: parent
+
+        Repeater {
+            anchors.fill: parent
+            model: 13 //连续显示13个元素
+            RectangleBlue { }
+        }
+    }
+```
+![图片示例](Photo/入门_定位元素_Repeater.png)
+
+### 布局元素
+
+QML使用`anchors`（锚）对元素进行布局。`anchoring`（锚定）是基础元素对象的基本属性，可以被所有的可视化QML元素使用。一个`anchors`（锚）就像一个协议，并且比几何变化更加强大。`Anchors`（锚）是相对关系的表达式，通常需要与其它元素搭配使用。  
+
+一个元素有6条锚定线（`top`顶，`bottom`底，`left`左，`right`右，`horizontalCenter`水平中，`verticalCenter`垂直中）。在文本元素（`Text` Element）中有一条文本的锚定基线（`baseline`）。每一条锚定线都有一个偏移（`offset`）值，在`top`（顶），`bottom`（底），`left`（左），`right`（右）的锚定线中它们也被称作边距。对于`horizontalCenter`（水平中）与`verticalCenter`（垂直中）与`baseline`（文本基线）中被称作偏移值。
+![图片示例](Photo/入门_布局元素_锚定线.png)
+
+```QML
+    Grid {
+        id: flow
+        anchors.centerIn: parent
+        columns: 3
+        spacing: 5 //元素间隔
+        anchors.fill: parent
+
+        RectangleBlue {
+            RectangleGreen {
+                //width: 30
+                anchors.fill: parent //填充
+                anchors.margins: 10 //边缘间隔
+                Text {
+                    anchors.centerIn: parent
+                    text: "(1)"
+                }
+            }
+        }
+
+        RectangleBlue {
+            RectangleGreen {
+                width: 40
+                height: 30
+                anchors.left: parent.left //子矩形的左边与父矩形的左边对其
+                anchors.leftMargin: 10 //左边框间隔
+                Text {
+                    anchors.centerIn: parent
+                    text: "(2)"
+                }
+            }
+        }
+
+        RectangleBlue {
+            RectangleGreen {
+                anchors.left: parent.right //子矩阵左边框与父矩阵右边框对齐
+                Text {
+                    anchors.centerIn: parent
+                    text: "(3)"
+                }
+            }
+        }
+
+        RectangleBlue {
+            RectangleGreen {
+                id: green1
+                width: 30
+                height: 10
+                //与父矩形 中间对齐
+                anchors.horizontalCenter: parent.horizontalCenter
+            }
+
+            RectangleGreen {
+                id: green2
+                width: 40
+                height: 20
+                //顶部与green1底部对齐，中间对齐
+                anchors.top: green1.bottom
+                anchors.topMargin: 5
+                anchors.horizontalCenter: green1.horizontalCenter
+                Text {
+                    anchors.centerIn: parent
+                    text: "(4)"
+                }
+            }
+        }
+
+        RectangleBlue {
+            RectangleGreen {
+                width: 30
+                height: 30
+                anchors.centerIn: parent //居中，需要自己设置元素大小
+                Text {
+                    anchors.centerIn: parent
+                    text: "(5)"
+                }
+            }
+        }
+
+        RectangleBlue {
+            RectangleGreen {
+                width: 30
+                height: 30
+
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.verticalCenterOffset: 15 //垂直偏移量+15
+                Text {
+                    anchors.centerIn: parent
+                    text: "(6)"
+                }
+            }
+        }
+    }
+```
+![图片示例](Photo/入门_布局元素_6个用例结果.png)
+
+### 输入元素
+
+#### **文本输入（TextInput）**
+
+这个元素支持使用正则表达式验证器来限制输入和输入掩码的模式设置。
+```QML
+    Rectangle {
+        width: 200
+        height: 80
+        color: "linen"
+
+        TextInput {
+            id: input1
+            x: 8; y: 8
+            width: 96; height: 20
+            focus: true //初始焦点
+            text: "Text Input 1"
+            KeyNavigation.tab: input2 //切换焦点，就是切换输入位置
+        }
+
+        TextInput {
+            id: input2
+            x: 8; y: 36
+            width: 96; height: 20
+            text: "Text Input 2"
+            KeyNavigation.tab: input1
+        }
+    }
+```
+![图片用例](Photo/入门_输入元素_TextInput.png)
+
+#### **焦点区域（FocusScope）**
+
+有时候需要使用其他元素对TextInput进行包装，当需要切换焦点时，因为包装元素无法将接受到的焦点转发给TextInput，所以就需要使用到**焦点区域**`FocusScope`。
+
+```QML
+//UnitTextInput.qml
+import QtQuick 2.0
+
+FocusScope {
+    width: 100
+    height: 20
+
+    Rectangle {
+        anchors.fill: parent
+        color: "honeydew"
+        border.color: "black"
+    }
+
+    TextInput {
+        id: input
+        anchors.fill: parent
+        anchors.margins: 5
+        focus: true
+    }
+}
+```
+```QML
+    Rectangle {
+        width:300
+        height:300
+        anchors.centerIn: parent
+        color: "linen"
+
+        Column {
+            anchors.fill: parent
+            anchors.centerIn: parent
+
+
+
+            UnitTextInput {
+                id: input1
+                KeyNavigation.tab: input2
+            }
+
+            UnitTextInput {
+                id: input2
+                KeyNavigation.tab: input1
+            }
+        }
+    }
+```
+![图片示例](Photo/入门_输入元素_FocusScope.png)
+
+#### **文本编辑（TextEdit）**
+
+文本编辑（`TextEdit`）元素与文本输入（`TextInput`）非常类似，它支持多行文本编辑。它不再支持文本输入的限制，但是提供了已绘制文本的大小查询（`paintedHeight`，`paintedWidth`）。
+
+```QML
+//UnitTextEdit.qml
+import QtQuick 2.0
+
+FocusScope {
+    width: 100; height: 100
+    Rectangle {
+        anchors.fill: parent
+        color: "lightsteelblue"
+        border.color: "gray"
+    }
+
+    property alias text: input.text
+    property alias input: input
+
+    TextEdit {
+        id: input
+        anchors.fill: parent
+        anchors.margins: 4
+        focus: true
+    }
+}
+```
+```QML
+    Rectangle {
+        width:300
+        height:300
+        anchors.centerIn: parent
+        color: "linen"
+
+        UnitTextEdit {
+            id: input1
+            focus: true
+            text: "MyTextEdit"
+        }
+    }
+```
+![图片示例](Photo/入门_输入元素_TextEdit.png)
+
+#### **按键元素（Key Element）**
+
+附加属性`key`允许你基于某个按键的点击来执行代码。例如使用`up`，`down`按键来移动一个方块，`left`，`right`按键来旋转一个元素，`plus`，`minus`按键来缩放一个元素。
+
+```QML
+    Rectangle {
+        anchors.fill: parent
+        color: "linen"
+
+        RectangleGreen {
+
+            id: hero
+        }
+
+        focus: true
+
+        //上下左右
+        Keys.onLeftPressed: hero.x -= 10
+        Keys.onRightPressed: hero.x += 10
+        Keys.onUpPressed: hero.y -= 10
+        Keys.onDownPressed: hero.y += 10
+        Keys.onPressed: { //缩放
+            switch(event.key) {
+            case Qt.Key_Plus:
+                hero.scale += 0.2
+                break;
+            case Qt.Key_Minus:
+                hero.scale -= 0.2
+                break;
+            }
+        }
+    }
+```
+![图片示例](Photo/入门_输入元素_Key.png)
+
+___
+## 动态元素
+
+### 动画
+
+**动画控制了属性的改变**。一个动画定义了属性值改变的曲线，将一个属性值变化从一个值过渡到另一个值。动画是由一连串的目标属性活动定义的，平缓的曲线算法能够引发一个定义时间内属性的持续变化。所有在QtQuick中的动画都由同一个计时器来控制，因此它们始终都保持同步，这也提高了动画的性能和显示效果。
+
+这里有一个demo，显示一个骷髅头的平移+旋转+缩小+变透明的动画效果组件：
+```QML
+//MySkeletonAnimations.qml
+import QtQuick 2.0
+
+Image {
+    x: 50; y: 80
+    width: 200
+    height: 200
+    source: "骷髅.png"
+
+    //平移动画
+    NumberAnimation on x {
+        to: 500
+        duration: 4000
+        loops: Animation.Infinite
+    }
+
+    //旋转动画
+    RotationAnimation on rotation {
+        to: 360
+        duration: 4000
+        loops: Animation.Infinite
+    }
+
+    //透明动画
+    PropertyAnimation on opacity {
+        to: 0.1
+        duration: 4000
+        loops: Animation.Infinite
+    }
+
+    //缩小
+    PropertyAnimation on scale {
+        to: 0.1
+        duration: 4000
+        loops: Animation.Infinite
+    }
+}
+```
+
+#### **动画元素（Animation Elements）**
+
+有几种类型的动画，每一种都在特定情况下都有最佳的效果，下面列出了一些常用的动画：
+
+* `PropertyAnimation`（属性动画）- 使用属性值改变播放的动画
+* `NumberAnimation`（数字动画）- 使用数字改变播放的动画
+* `ColorAnimation`（颜色动画）- 使用颜色改变播放的动画
+* `RotationAnimation`（旋转动画）- 使用旋转改变播放的动画
+
+除了上面这些基本和通常使用的动画元素，QtQuick还提供了一切特殊场景下使用的动画：
+
+* `PauseAnimation`（停止动画）- 运行暂停一个动画
+* `SequentialAnimation`（顺序动画）- 允许动画有序播放
+* `ParallelAnimation`（并行动画）- 允许动画同时播放
+* `AnchorAnimation`（锚定动画）- 使用锚定改变播放的动画
+* `ParentAnimation`（父元素动画）- 使用父对象改变播放的动画
+* `SmotthedAnimation`（平滑动画）- 跟踪一个平滑值播放的动画
+* `SpringAnimation`（弹簧动画）- 跟踪一个弹簧变换的值播放的动画
+* `PathAnimation`（路径动画）- 跟踪一个元素对象的路径的动画
+* `Vector3dAnimation`（3D容器动画）- 使用`QVector3d`值改变播放的动画
+
+当使用更加复杂的动画时，可能需要在播放一个动画时中改变一个属性或者运行一个脚本。对于这个问题，QtQuick提供了一个动作元素：
+
+* `PropertyAction`（属性动作）- 在播放动画时改变属性
+* `ScriptAction`（脚本动作）- 在播放动画时运行脚本
+
+#### **应用动画（Applying Animations）**
+
+动画可以通过以下方式来应用：
+* `Animation on`属性动画：在元素完整加载后自动运行
+* `behavior on`属性动作：当属性值改变时自动运行
+* `standalone animation`独立运行动画：使用start()函数明确指定运行或者running属性被设置为true（比如通过属性绑定）
+
+在写demo前先设计一个可点击图像组件：
+```QML
+//ClickableImage.qml
+import QtQuick 2.0
+
+Item {
+    id: root
+    width: column.childrenRect.width
+    height: column.childrenRect.height
+    property alias text: label.text
+    property alias source: image.source
+    signal clicked
+
+    Column {
+        id: column
+        Image {
+            width: 150
+            height: 150
+            id: image
+        }
+        Text {
+            id: label
+            width: image.width
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            color: "#111111"
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: root.clicked()
+    }
+}
+```
+
+##### `Animation on`属性动画
+
+这个之前也有用过，动画效果就是骷髅头缓慢平移到`y=40`的坐标，点击骷髅头返回原位。
+```QML
+ClickableImage {
+        x: 40; y: 200
+        property double y_index: 200
+        source: "骷髅.png"
+        text: "属性动画"
+
+        NumberAnimation on y {
+            to: 40; duration: 4000
+        }
+
+        onClicked: {
+            y = y_index
+        }
+    }
+```
+
+##### `behavior on`属性动作
+
+`Behavior` 定义了每当特定属性值更改时要应用的默认动画。例子是设定当点击图片时`y`利用函数随机变化。
+```QML
+    ClickableImage {
+        x: 152; y: 200
+        source: "骷髅.png"
+        text: "属性动作"
+
+        Behavior on y {
+            NumberAnimation { duration: 4000 }
+            //enabled: false //取消动画过程
+        }
+
+        onClicked: y = 40+Math.random()*(205-40)
+    }
+```
+
+##### `standalone animation`独立运行动画
+
+例子用一个私有元素定义动画（可以写在文档的任意地方），点击图片调用动画函数`start()`启动动画，除此之外还有`start()`，`stop()`，`resume()`，`restart()`函数。这个动画自身可以比其他类型的动画更早的获取到更多的相关信息。只需要定义目标和目标元素的属性需要怎样改变的一个动画。例子定义了一个`from`属性当做动画的初始属性，一个`to`属性当做目标属性。
+```QML
+    ClickableImage {
+        id: imagetest
+        x: 200; y: 200
+        source: "骷髅.png"
+        text: "独立运行动画"
+
+        onClicked: test.start()
+
+        NumberAnimation {
+            id: test
+            target: imagetest
+            properties: "y"
+            from: 300
+            to: 100
+            duration: 4000
+        }
+    }
+```
+
+#### **缓冲曲线（Easing Curves）**
+
+默认的动画效果都是匀速的，缓冲曲线简单来说就代表动画的运行速度随时间的变化。
+
+在写demo前要升级`ClickableImage`
+```QML
+//ClickableImageV2
+import QtQuick 2.0
+
+Item {
+    id: root
+    width: column.childrenRect.width
+    height: column.childrenRect.height
+    property alias text: label.text
+    property alias source: image.source
+    signal clicked
+
+    Column {
+        id: column
+        Image {
+            width: 150
+            height: 150
+            id: image
+        }
+        Text {
+            id: label
+            width: image.width
+            horizontalAlignment: Text.AlignHCenter
+            wrapMode: Text.WordWrap
+            color: "#111111"
+        }
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: root.clicked()
+    }
+
+    property bool framed: false
+
+    Rectangle {
+        anchors.fill: parent
+        color: "white"
+        visible: root.framed
+    }
+}
+
+```
+
+例子使用一个缓冲曲线数组，利用`Repeater`将缓冲曲线依次分配给一个`ClickableImageV2`对象。点击一下就分配新的曲线，然后重新开始动画。
+```QML
+    Grid {
+        anchors.fill: parent
+        anchors.margins: 15
+        spacing: 15
+        Repeater {
+            model: easings
+            ClickableImageV2 {
+                framed: true
+                source: "骷髅.png"
+                onClicked: {
+                    ani.easing.type = modelData
+                    ani.restart()
+                }
+            }
+        }
+    }
+
+    RectangleGreen {
+        id: fk
+        x: 100; y:100
+    }
+
+    NumberAnimation {
+        id: ani
+        target: fk
+        from: 50; to: 300
+        properties: "x"
+        duration: 2000
+    }
+```
+> 还有很多参数可以微调动画，自行[百度](http://www.bing.com)
+
+#### **动画分组（Grouped Animations）**
+
+通常使用的动画比一个属性的动画更加复杂。使用动画分组，或者说是一组动画，利用组合达到完成复杂动画的效果。  
+有两种方法完成分组：平行与连续。使用`ParallelAnimation`（平行动画）和`SequentialAnimation`（连续动画）可以完成。
+
+##### `ParallelAnimation`（平行动画）
+
+平行，指的是动画同时移动，所有子动画会同时运行。  
+例子点击让骷髅头从(100,100)->(200,400)
+```QML
+    ClickableImageV2 {
+        id: ima
+        x: 100; y: 100
+        source: "骷髅.png"
+        onClicked: pa.restart()
+    }
+
+    ParallelAnimation {
+        id: pa
+        NumberAnimation {
+            target: ima
+            properties: "x"
+            to: 200
+            duration: 4000
+        }
+        NumberAnimation {
+            target: ima
+            properties: "y"
+            to: 400
+            duration: 4000
+        }
+    }
+```
+
+##### `SequentialAnimation`（连续动画）
+
+连续，指的是动画一个接一个移动，所有子动画会依次运行。  
+例子点击让骷髅(100,100)->(200,100)->200,400
+```QML
+    ClickableImageV2 {
+        id: ima
+        x: 100; y: 100
+        source: "骷髅.png"
+        onClicked: pa.restart()
+    }
+
+    SequentialAnimation  {
+        id: pa
+        NumberAnimation {
+            target: ima
+            properties: "x"
+            to: 200
+            duration: 4000*0.7
+        }
+        NumberAnimation {
+            target: ima
+            properties: "y"
+            to: 400
+            duration: 4000*0.3
+        }
+    }
+```
+
+#### 嵌套动画分组
+
+用例，点击让骷髅向右上方起飞后降落，触碰到底部反弹（利用缓冲曲线）。
+```QML
+    property int duration: 3000
+
+    Image {
+        id: head
+        x: 50; y: 350
+        width: 100; height: 100
+        source: "骷髅.png"
+
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                head.x = 50
+                head.y = 350
+                ani.restart()
+            }
+        }
+    }
+
+    ParallelAnimation {
+        id: ani
+        SequentialAnimation {
+            NumberAnimation {
+                target: head
+                properties: "y"
+                to: 50
+                duration: root.duration*0.4
+                easing.type: Easing.OutCirc
+            }
+
+            NumberAnimation {
+                target: head
+                properties: "y"
+                to: 350
+                duration: root.duration*0.6
+                easing.type: Easing.OutBounce
+            }
+        }
+
+        NumberAnimation {
+            target: head
+            properties: "x"
+            to: 350
+            duration: root.duration
+        }
+
+        RotationAnimation {
+            target: head
+            properties: "rotation"
+            from: 0 //这里不设置初始角度，转一次就不会转了
+            to: 720
+            duration: root.duration*1.1
+        }
+    }
+```
+> **注意**：旋转那里要加from，因为第一次旋转过后，整张照片的角度就定在720了，下次旋转检测到就不会执行。
+
+### 状态与过渡
+
+#### **状态（States）**
+
+使用`State`元素来定义状态，需要与基础元素对象（`Item`）的`states`序列属性连接。状态通过它的状态名来鉴别，由组成它的一系列简单的属性来改变元素。默认的状态在初始化元素属性时定义，并命名为“”（一个空的字符串）。
+
+自定义一个红绿灯，利用状态的转换实现灯的转换。
+```QML
+//RedGreenLight.qml
+import QtQuick 2.0
+
+Rectangle {
+    id: light
+    width: 150
+    height: 300
+    color: "darkgray"
+
+    Rectangle {
+        id: light1
+        width: 100
+        height: width
+        radius: width/2
+
+        x: 25; y: 25
+
+        color: "black"
+    }
+
+    Rectangle {
+        id: light2
+        width: 100
+        height: width
+        radius: width/2
+
+        x: 25; y: 200-25
+
+        color: "black"
+    }
+
+    state: "stop"
+
+    states: [
+        State {
+            name: "stop"
+            PropertyChanges {
+                target: light1
+                color: "red"
+            }
+            PropertyChanges {
+                target: light2
+                color: "black"
+            }
+        },
+        State {
+            name: "go"
+            PropertyChanges {
+                target: light1
+                color: "black"
+            }
+            PropertyChanges {
+                target: light2
+                color: "green"
+            }
+        }
+    ]
+
+    MouseArea {
+        anchors.fill: parent
+        onClicked: parent.state = (parent.state == "stop"?"go":"stop")
+    }
+}
+```
