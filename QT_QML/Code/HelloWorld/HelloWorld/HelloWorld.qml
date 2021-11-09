@@ -1,5 +1,6 @@
 import QtQuick 2.9
 import QtQuick.Window 2.3
+import Qt.labs.settings 1.0
 
 Window {
     id: root
@@ -8,39 +9,11 @@ Window {
     height: 600
     title: qsTr("Hello World")
 
-    Rectangle {
-        width: 240
-        height: 300
-        color: "white"
-        GridView {
-            anchors.fill: parent
-            anchors.margins: 20
-            clip: true
-            model: 100
-            cellWidth: 45
-            cellHeight: 45
-            delegate: numberDelegate
-            highlight: highlightComponent
-            focus: true
+    function createItem() {
+            Qt.createQmlObject("import QtQuick 2.0; Rectangle { x: 100; y: 100; width: 100;
+        height:100; color: \"blue\" }", root, "dynamicItem");
         }
-        Component {
-                id: highlightComponent
-                Rectangle {
-                    width: ListView.view.width
-                    color: "lightGreen"
-                }
-            }
-        Component {
-                id: numberDelegate
-                Item {
-                    width: 40
-                    height: 40
-                    Text {
-                        anchors.centerIn: parent
-                        font.pixelSize: 10
-                        text: index
-                    }
-                }
-            }
-    }
+
+        Component.onCompleted: root.createItem();
+
 }
