@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		BEEA7BF027CDBA5D0094B843 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = BEEA7BEF27CDBA5D0094B843 /* main.m */; };
+		BEEA7BFB27CDBC8F0094B843 /* MyClass.m in Sources */ = {isa = PBXBuildFile; fileRef = BEEA7BFA27CDBC8F0094B843 /* MyClass.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,8 @@
 /* Begin PBXFileReference section */
 		BEEA7BEC27CDBA5D0094B843 /* IOSTestGitee */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = IOSTestGitee; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEEA7BEF27CDBA5D0094B843 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		BEEA7BFA27CDBC8F0094B843 /* MyClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyClass.m; sourceTree = "<group>"; };
+		BEEA7BFC27CDBCAA0094B843 /* MyClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyClass.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,9 +60,19 @@
 		BEEA7BEE27CDBA5D0094B843 /* IOSTestGitee */ = {
 			isa = PBXGroup;
 			children = (
+				BEEA7BF827CDBBE90094B843 /* MyClass */,
 				BEEA7BEF27CDBA5D0094B843 /* main.m */,
 			);
 			path = IOSTestGitee;
+			sourceTree = "<group>";
+		};
+		BEEA7BF827CDBBE90094B843 /* MyClass */ = {
+			isa = PBXGroup;
+			children = (
+				BEEA7BFC27CDBCAA0094B843 /* MyClass.h */,
+				BEEA7BFA27CDBC8F0094B843 /* MyClass.m */,
+			);
+			path = MyClass;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -119,6 +132,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEEA7BFB27CDBC8F0094B843 /* MyClass.m in Sources */,
 				BEEA7BF027CDBA5D0094B843 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

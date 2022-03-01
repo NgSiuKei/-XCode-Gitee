@@ -6,12 +6,20 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MyClass.h"
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        // insert code here...
-        NSLog(@"Hello, World!");
-        NSLog(@"Or Eat Shit.");
+        NSLog(@"Hello, World! Or Eat Shit!!!");
+        NSLog(@"Let's go!!!");
+        
+        MyClass *classOne = [[MyClass alloc] init];
+        [classOne sayHello];
+        
+        MyClass *classTwo = [[MyClass alloc] init];
+        classTwo.strName = @"classTwo";
+        classTwo.nAge = 10;
+        [classTwo sayHello];
     }
     return 0;
 }
