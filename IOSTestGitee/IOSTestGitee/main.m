@@ -20,6 +20,8 @@ int main(int argc, const char * argv[]) {
         classTwo.strName = @"classTwo";
         classTwo.nAge = 10;
         [classTwo sayHello];
+        
+        NSLog(@"It's over mxxxxxfxxkxx...");
     }
     return 0;
 }
